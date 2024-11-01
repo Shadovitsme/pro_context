@@ -55,7 +55,7 @@ class UserController extends Controller
 
     public function get(Request $req, string $id = null)
     {
-// TODO предвидеть что айди может быть ток числом
+    // TODO предвидеть что айди может быть ток числом
         if ($id !== null) {
             $this->checkZeroArray((User::where('id', $id)->get())[0]);
 
