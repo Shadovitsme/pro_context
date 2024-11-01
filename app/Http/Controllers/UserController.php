@@ -55,9 +55,9 @@ class UserController extends Controller
 
     public function get(Request $req, string $id = null)
     {
-
+// TODO предвидеть что айди может быть ток числом
         if ($id !== null) {
-            $this->checkZeroArray(User::find($id));
+            $this->checkZeroArray((User::where('id', $id)->get())[0]);
 
         } elseif ($req->query('login') !== null) {
             $this->checkZeroArray(User::where('name', $req->query('login'))->get());
