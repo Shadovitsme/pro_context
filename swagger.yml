@@ -1,0 +1,227 @@
+openapi: '3.0.3'
+info:
+  title: User API
+  description: Интерфейс взаимодействия с базой данной пользователей и системой авторизации. Только для внутреннего пользования и взаимодействия между микросервисами.
+  version: '0.73 alpha'
+servers:
+  - url: https://localhost/api/v1
+tags:
+  - name: /users
+    description: 'all about users'
+paths:
+  /users:
+    get:
+      tags:
+        - /users
+      parameters:
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            json:
+              schema: 
+                $ref: '#components/schemas/userAnsver'
+        '404':
+          description: Not Found
+          content:
+            json:
+              schema: 
+                $ref: '#/components/schemas/404errorMessage'
+    post:
+      tags:
+        - /users
+      description: ''
+      requestBody:
+        content:
+          json:
+            schema: 
+              $ref: '#/components/schemas/payload'
+      responses:
+        '200':
+          description: OK
+          content:
+            json:
+              schema:
+                $ref: '#/components/schemas/userAnsver'
+        '400':
+          description: Error
+          content:
+            json:
+              schema: 
+                $ref: '#/components/schemas/400errorMessage'
+
+  /users{id}:
+    get:
+      tags:
+        - /users
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: 
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            json:
+              schema: 
+                $ref: '#components/schemas/userAnsver'
+        '404':
+          description: Not Found
+          content:
+            json:
+              schema:
+                $ref: '#components/schemas/404errorMessage'
+    patch:
+      tags:
+        - /users
+      description: ''
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: 
+            type: integer
+      requestBody:
+        content:
+          json:
+            schema:
+              $ref: '#/components/schemas/payload'
+      responses:
+        '200':
+          description: OK
+          content:
+            json:
+              schema:
+                $ref: '#/components/schemas/userAnsver'
+        '404':
+          description: Not Found
+          content:
+            json:
+              schema:
+                $ref: '#/components/schemas/404errorMessage'
+        '400':
+          description: Error
+          content:
+            json:
+              schema:
+                $ref: '#/components/schemas/PatchErrorMessage'
+
+    delete:
+      tags:
+        - /users
+      description: ''
+      parameters:
+        - name: id 
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            json:
+              schema: 
+                $ref: '#/components/schemas/okAnsver'
+        '404':
+          description: Not Found
+          content:
+            json:
+              schema:
+                $ref: '#/components/schemas/404errorMessage'
+
+  /users/authenticate:
+    post:
+      tags:
+        - /users
+      description: ''
+      requestBody:
+        content:
+          json:
+            schema: 
+              $ref: '#components/schemas/payload'
+      responses:
+        '200':
+          description: OK
+          content:
+            json:
+              schema: 
+                $ref: '#/components/schemas/okAnsver'
+        '404':
+          description: Not Found
+          content:
+            json:
+              schema:
+                $ref: '#/components/schemas/AuthErrorMessage'
+          
+components:
+  schemas:
+    userAnsver:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 75923
+        login:
+          type: string
+          example: ukki
+        email:
+          type: string
+          example: ukki@example.com
+        password:
+          type: string
+          example: sha254-POSNT835v435n9ERV45vnVVNptUOTv43nutr
+
+    404errorMessage:
+      type: object
+      properties:
+          err:
+            type: string
+            example: Invalid id
+
+    payload:
+      type: object
+      properties:
+        login:
+          type: string
+          example: ukki
+        password:
+          type: string
+          example: _5vm8m-5vDGDG
+
+    okAnsver:
+      type: object
+      properties:
+        ok: 
+          type: string
+          example: Seccess!
+    
+    400errorMessage:
+      type: object
+      properties:
+          err:
+            type: string
+            example: Password must be at least 12 characters long
+
+    AuthErrorMessage:
+      type: object
+      properties:
+          err:
+            type: string
+            example: Wrong login or password
+
+    PatchErrorMessage:
+      type: object
+      properties:
+          err:
+            type: string
+            example: Login already in use
