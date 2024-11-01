@@ -12,17 +12,13 @@
 
     <x-nav />
 
-    <div class="container pt-5">
-
-        <p class="lead">
-            Это тестовая страница, содержащая все возможные поля и действия для взаимодействия с API.
-        </p>
+    <div class="container align-items-start justify-content-between d-flex flex-row flex-wrap pt-5">
         <x-register />
         <x-authenticate />
-        <x-profile />
         <x-edit-profile />
+        <x-profile />
+        <x-delete />
         <x-result-feed />
-
     </div>
 </body>
 

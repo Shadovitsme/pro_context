@@ -13,13 +13,14 @@
     <x-nav />
 
     <div class="container pt-5">
-
-        <x-register />
-        <x-authenticate />
-        <x-profile />
-        <x-edit-profile />
+        <div class=" d-flex mb-3 flex-wrap gap-3 ">
+            <x-register />
+            <x-authenticate />
+            <x-edit-profile />
+            <x-profile />
+            <x-delete />
+        </div>
         <x-result-feed />
-
     </div>
 </body>
 

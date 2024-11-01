@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use function Laravel\Prompts\error;
+
 class UserController extends Controller
 {
     public function outputResult($queryResult = null, ?string $err = null, ?string $ok = null)
@@ -17,11 +19,14 @@ class UserController extends Controller
                 'id' => $queryResult->id,
                 'login' => $queryResult->name,
                 'password' => $queryResult->password,
+                'birth_date' => $queryResult->birth_date,
+                'email' => $queryResult->email,
             ];
         }
 
         if ($err) {
             $result = array_merge(['error' => $err], $result);
+            http_response_code(404);
         }
 
         if ($ok) {
@@ -52,6 +57,32 @@ class UserController extends Controller
 
         return true;
     }
+
+    private function emailValidation(?string $email): bool
+    {
+        // TODO real email validation
+        if ($email === null) {
+            $this->outputResult(err: 'no email provided');
+            return false;
+        }
+        if (!$email) {
+            $this->outputResult(err: 'invalid email');
+            return false;
+        }
+
+        return true;
+    }
+
+    public function checkAge($birthDate): bool
+    { // TODO возраст обычно это дата рождения чтобы не пришлось раз в год обновлять поля всем пользователям
+        if ($birthDate <= 0) {
+            $this->outputResult(err: 'birth date ' . $birthDate . ' is not allowed');
+            return false;
+        }
+
+        return true;
+    }
+
 
     public function get(Request $req, string $id = null)
     {
@@ -114,6 +145,8 @@ class UserController extends Controller
         if (
             $req->json('login') === null
             && $req->json('password') === null
+            && $req->json('email') === null
+            && $req->json('birth_date') === null
         ) {
             $this->outputResult(err: 'nothing to change');
             return;
@@ -127,12 +160,33 @@ class UserController extends Controller
             return;
         }
 
+        if (
+            $req->json('email') !== null
+            && !empty(User::where('email', $req->json('email')))
+        ) {
+            if (!$this->emailValidation($req->json('email'))) {
+                return;
+            }
+
+            User::where('id', $id)->update(['email' => $req->json('email')]);
+        }
+
+        if (
+            $req->json('birth_date') !== null
+        ) {
+            if (!$this->emailValidation($req->json('birth_date'))) {
+                return;
+            }
+
+            User::where('id', $id)->update(['birth_date' => $req->json('birth_date')]);
+        }
+
         if ($req->json('password') !== null) {
             if (!$this->checkPassword($req->json('password'))) {
                 return;
             }
 
-            User::where('id', $id)->update(['password' => $req->json('password')]);
+            User::where('id', $id)->update(['password' => Hash::make($req->json('password'))]);
         }
 
         if ($req->json('login') !== null) {
@@ -153,16 +207,29 @@ class UserController extends Controller
             return;
         }
 
+        if (!$this->emailValidation($req->json('email'))) {
+            return;
+        }
+
+        if (!$this->checkAge($req->json('birth_date'))) {
+            return;
+        }
+
         if (!empty(User::where('name', $req->json('login'))->get()[0])) {
             $this->outputResult(err: 'login already exists');
             return;
         }
 
+        if (!empty(User::where('email', $req->json('email'))->get()[0])) {
+            $this->outputResult(err: 'email already in use');
+            return;
+        }
+
         User::create([
             'name' => $req->json('login'),
-            'email' => $req->json('login') . rand(10, 100) . '@mail.ru',
+            'email' => $req->json('email'),
             'password' => $req->json('password'),
-            'age' => 10
+            'birth_date' => $req->json('birth_date')
         ]);
 
         $this->outputResult(User::where('name', $req->json('login'))->get()[0]);

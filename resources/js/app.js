@@ -96,9 +96,21 @@ $(".js--delete button").on("click", () => {
 $(".js--register button").on("click", () => {
     let login = $(".js--register .js--login").val().trim();
     let password = $(".js--register .js--password").val().trim();
-    if (login === "" || password === "") {
+    let birthDate = $(".js--register .js--birth-date").val();
+    let email = $(".js--register .js--email").val().trim();
+    // TODO вадлидация email
+    // TODO дата не в будущем
+    if (login === "" || password === "" || email === "") {
         alert("Не все поля заполнены!");
     } else {
+        alert(
+            JSON.stringify({
+                login: login,
+                email: email,
+                birth_date: birthDate,
+                password: password,
+            })
+        );
         $.ajax({
             url: api_pref + `users`,
             method: "POST",
@@ -106,10 +118,15 @@ $(".js--register button").on("click", () => {
             contentType: "applicatio/json",
             data: JSON.stringify({
                 login: login,
+                email: email,
+                birth_date: birthDate,
                 password: password,
             }),
             success: function (data) {
-                result_queue("Результат регистрации пользователя", JSON.stringify(data));
+                result_queue(
+                    "Результат регистрации пользователя",
+                    JSON.stringify(data)
+                );
             },
         });
     }
@@ -118,10 +135,23 @@ $(".js--register button").on("click", () => {
 $(".js--update button").on("click", () => {
     let id = $(".js--update .js--id").val().trim();
     let login = $(".js--update .js--login").val().trim();
+    let email = $(".js--update .js--email").val().trim();
+    let birthDate = $(".js--update .js--birth-date").val();
+    // TODO вадлидация email
+    // TODO дата не в будущем
     let password = $(".js--update .js--password").val().trim();
     if (id === "") {
         alert("id не предоствлен!");
     } else {
+        alert(
+            JSON.stringify({
+                id: id,
+                login: login,
+                email: email,
+                birth_date: birthDate,
+                password: password,
+            })
+        );
         $.ajax({
             url: api_pref + `users/${id}`,
             method: "PATCH",
@@ -129,10 +159,15 @@ $(".js--update button").on("click", () => {
             contentType: "applicatio/json",
             data: JSON.stringify({
                 login: login,
+                email: email,
+                birth_date: birthDate,
                 password: password,
             }),
             success: function (data) {
-                result_queue("Результат изменения пользователя", JSON.stringify(data));
+                result_queue(
+                    "Результат изменения пользователя",
+                    JSON.stringify(data)
+                );
             },
         });
     }
