@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -75,10 +76,8 @@ class UserController extends Controller
             $this->outputResult(err: 'no password provided');
             return;
         }
-        if (
-            !empty(User::where('name', $req->json('login'))
-                ->where('password', hash('sha256', $req->json('password')))
-                ->get()[0])
+        $hash = User::where('name', $req->json('login'))->get('password');
+        if (Hash::check($req->json('password'), $hash[0]->password)
         ) {
             $this->outputResult(ok: 'success');
             return;
@@ -133,7 +132,7 @@ class UserController extends Controller
                 return;
             }
 
-            User::where('id', $id)->update(['password' => hash('sha256', $req->json('password'))]);
+            User::where('id', $id)->update(['password' => $req->json('password')]);
         }
 
         if ($req->json('login') !== null) {
@@ -162,7 +161,7 @@ class UserController extends Controller
         User::create([
             'name' => $req->json('login'),
             'email' => $req->json('login') . rand(10, 100) . '@mail.ru',
-            'password' => hash('sha256', $req->json('password')),
+            'password' => $req->json('password'),
             'age' => 10
         ]);
 
