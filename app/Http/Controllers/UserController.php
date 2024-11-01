@@ -33,8 +33,8 @@ class UserController extends Controller
     }
     public function checkZeroArray($queryResult)
     {
-        if (!empty($queryResult->id)) {
-            $this->outputResult($queryResult);
+        if (!empty($queryResult[0]->id)) {
+            $this->outputResult($queryResult[0]);
         } else {
             $this->outputResult(err: 'no such user');
         };
@@ -57,7 +57,7 @@ class UserController extends Controller
     {
     // TODO предвидеть что айди может быть ток числом
         if ($id !== null) {
-            $this->checkZeroArray((User::where('id', $id)->get())[0]);
+            $this->checkZeroArray((User::where('id', $id)->get()));
 
         } elseif ($req->query('login') !== null) {
             $this->checkZeroArray(User::where('name', $req->query('login'))->get());
