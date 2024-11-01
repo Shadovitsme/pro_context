@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -53,11 +54,12 @@ class UserController extends Controller
 
     public function get(Request $req, string $id = null)
     {
+
         if ($id !== null) {
-            $this->checkZeroArray(DB::table('users')->find($id));
+            $this->checkZeroArray(User::find($id));
 
         } elseif ($req->query('login') !== null) {
-            $this->checkZeroArray(DB::table('users')->where('name', $req->query('login'))->get());
+            $this->checkZeroArray(User::where('name', $req->query('login'))->get());
             return;
         } else {
             $this->outputResult(err: 'no id nor login provided');
@@ -74,8 +76,7 @@ class UserController extends Controller
             return;
         }
         if (
-            !empty(DB::table('users')
-                ->where('name', $req->json('login'))
+            !empty(User::where('name', $req->json('login'))
                 ->where('password', hash('sha256', $req->json('password')))
                 ->get()[0])
         ) {
@@ -92,7 +93,7 @@ class UserController extends Controller
             $this->outputResult(err: 'no id provided');
             return;
         }
-        if (DB::table('users')->delete($id) !== 0) {
+        if (User::find($id)->delete() !== 0) {
             $this->outputResult(ok: 'Успех!');
             return;
         } else {
@@ -107,7 +108,7 @@ class UserController extends Controller
             $this->outputResult(err: 'no id provided');
             return;
         }
-        if (empty(DB::table('users')->where('id', $id)->get()[0])) {
+        if (empty(User::where('id', $id)->get()[0])) {
             $this->outputResult(err: 'no such user');
             return;
         }
@@ -121,7 +122,7 @@ class UserController extends Controller
 
         if (
             $req->json('login') !== null
-            && !empty(DB::table('users')->where('name', $req->json('login'))->get()[0])
+            && !empty(User::where('name', $req->json('login'))->get()[0])
         ) {
             $this->outputResult(err: 'login already in use');
             return;
@@ -132,14 +133,14 @@ class UserController extends Controller
                 return;
             }
 
-            DB::table('users')->where('id', $id)->update(['password' => hash('sha256', $req->json('password'))]);
+            User::where('id', $id)->update(['password' => hash('sha256', $req->json('password'))]);
         }
 
         if ($req->json('login') !== null) {
-            DB::table('users')->where('id', $id)->update(['name' => $req->json('login')]);
+            User::where('id', $id)->update(['name' => $req->json('login')]);
         }
 
-        $this->outputResult(DB::table('users')->where('id', $id)->get()[0]);
+        $this->outputResult(User::where('id', $id)->get()[0]);
     }
 
     public function register(Request $req)
@@ -153,17 +154,18 @@ class UserController extends Controller
             return;
         }
 
-        if (!empty(DB::table('users')->where('name', $req->json('login'))->get()[0])) {
+        if (!empty(User::where('name', $req->json('login'))->get()[0])) {
             $this->outputResult(err: 'login already exists');
             return;
         }
 
-        DB::table('users')->insert([
+        User::create([
             'name' => $req->json('login'),
-            'email' => rand(10, 100) . '@mail.ru',
+            'email' => $req->json('login') . rand(10, 100) . '@mail.ru',
             'password' => hash('sha256', $req->json('password')),
+            'age' => 10
         ]);
 
-        $this->outputResult(DB::table('users')->where('name', $req->json('login'))->get()[0]);
+        $this->outputResult(User::where('name', $req->json('login'))->get()[0]);
     }
 }
