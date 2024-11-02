@@ -1,5 +1,6 @@
 openapi: '3.0.3'
 info:
+# TODO попарвить сваггер
   title: User API
   description: Интерфейс взаимодействия с базой данной пользователей и системой авторизации. Только для внутреннего пользования и взаимодействия между микросервисами.
   version: '0.73 alpha'
@@ -180,6 +181,9 @@ components:
         password:
           type: string
           example: sha254-POSNT835v435n9ERV45vnVVNptUOTv43nutr
+        age:
+          type: string
+          example: 10-11-2024
 
     404errorMessage:
       type: object
