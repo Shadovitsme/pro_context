@@ -66,6 +66,12 @@ class UserController extends Controller
         }
         if (!(preg_match("/[0-9a-z]+@[a-z]*.*/", strtolower($email)))) {
             $this->outputResult(err: 'invalid email email');
+            return false;
+        }
+        $queryResult = User::where('email', $email)->get();
+        if (!empty($queryResult[0]->id)) {
+            $this->outputResult(err: 'email already exists');
+            return false;
         }
         return true;
     }

@@ -132,14 +132,6 @@ $(".js--register button").on("click", () => {
     } else if (dateCheck(birthDate)) {
         alert("Невалидная дата");
     } else {
-        alert(
-            JSON.stringify({
-                login: login,
-                email: email,
-                birth_date: birthDate,
-                password: password,
-            })
-        );
         $.ajax({
             url: api_pref + `users`,
             method: "POST",
