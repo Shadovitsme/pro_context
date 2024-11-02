@@ -1,15 +1,31 @@
+import { isEmptyObject } from "jquery";
 import "./bootstrap";
+
+function emailValidate(email) {
+    return String(email)
+        .toLowerCase()
+        .match(/[0-9a-z]+@[a-z]*.*/);
+}
+function dateCheck(date) {
+    const today = new Date();
+    let checkDate = new Date(date);
+    today.setHours(12, 0, 0, 0);
+    checkDate.setHours(12, 0, 0, 0);
+    if (checkDate >= today) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 let results = [];
 
 const result_queue = (header, body) => {
-    results.unshift(
-        {
-            color: Math.random()*360,
-            header: header,
-            body: body
-        }
-    );
+    results.unshift({
+        color: Math.random() * 360,
+        header: header,
+        body: body,
+    });
 
     if (results.length > 4) {
         results.pop();
@@ -17,17 +33,22 @@ const result_queue = (header, body) => {
 
     $(".js--result-feed").html("");
 
-    results.forEach(el => {
-        $("<div/>", {class: "card", style: `background: hsl(${el.color}, 50%, 16%)`}).html(
-            $("<div/>", {class: "card-body"}).append(
-            $("<h5/>", {calss: "card-header"}).html(el.header),
-            $("<p/>", {class: "card-text"}).html(el.body)
-        )
-        ).appendTo(".js--result-feed");
+    results.forEach((el) => {
+        $("<div/>", {
+            class: "card",
+            style: `background: hsl(${el.color}, 50%, 16%)`,
+        })
+            .html(
+                $("<div/>", { class: "card-body" }).append(
+                    $("<h5/>", { calss: "card-header" }).html(el.header),
+                    $("<p/>", { class: "card-text" }).html(el.body)
+                )
+            )
+            .appendTo(".js--result-feed");
     });
 
     return true;
-}
+};
 
 const api_pref = "/api/v1/";
 
@@ -47,7 +68,10 @@ $(".js--auth button").on("click", () => {
                 password: password,
             }),
             success: function (data) {
-                result_queue("Результат авторизации пользователя", JSON.stringify(data));
+                result_queue(
+                    "Результат авторизации пользователя",
+                    JSON.stringify(data)
+                );
             },
         });
     }
@@ -87,7 +111,10 @@ $(".js--delete button").on("click", () => {
             method: "DELETE",
             dataType: "json",
             success: function (data) {
-                result_queue("Результат удаления пользователя", JSON.stringify(data));
+                result_queue(
+                    "Результат удаления пользователя",
+                    JSON.stringify(data)
+                );
             },
         });
     }
@@ -98,10 +125,12 @@ $(".js--register button").on("click", () => {
     let password = $(".js--register .js--password").val().trim();
     let birthDate = $(".js--register .js--birth-date").val();
     let email = $(".js--register .js--email").val().trim();
-    // TODO вадлидация email
-    // TODO дата не в будущем
     if (login === "" || password === "" || email === "") {
         alert("Не все поля заполнены!");
+    } else if (emailValidate(email) == null) {
+        alert("некорректная почта!");
+    } else if (dateCheck(birthDate)) {
+        alert("Невалидная дата");
     } else {
         alert(
             JSON.stringify({
@@ -137,11 +166,13 @@ $(".js--update button").on("click", () => {
     let login = $(".js--update .js--login").val().trim();
     let email = $(".js--update .js--email").val().trim();
     let birthDate = $(".js--update .js--birth-date").val();
-    // TODO вадлидация email
-    // TODO дата не в будущем
     let password = $(".js--update .js--password").val().trim();
     if (id === "") {
         alert("id не предоствлен!");
+    } else if (emailValidate(email) == null) {
+        alert("Некорректная почта!");
+    } else if (dateCheck(birthDate)) {
+        alert("Невалидная дата");
     } else {
         alert(
             JSON.stringify({

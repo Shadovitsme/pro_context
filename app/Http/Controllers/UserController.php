@@ -60,21 +60,18 @@ class UserController extends Controller
 
     private function emailValidation(?string $email): bool
     {
-        // TODO real email validation
         if ($email === null) {
             $this->outputResult(err: 'no email provided');
             return false;
         }
-        if (!$email) {
-            $this->outputResult(err: 'invalid email');
-            return false;
+        if (!(preg_match("/[0-9a-z]+@[a-z]*.*/", strtolower($email)))) {
+            $this->outputResult(err: 'invalid email email');
         }
-
         return true;
     }
 
     public function checkAge($birthDate): bool
-    { // TODO возраст обычно это дата рождения чтобы не пришлось раз в год обновлять поля всем пользователям
+    {
         if ($birthDate <= 0) {
             $this->outputResult(err: 'birth date ' . $birthDate . ' is not allowed');
             return false;
@@ -86,8 +83,7 @@ class UserController extends Controller
 
     public function get(Request $req, string $id = null)
     {
-    // TODO предвидеть что айди может быть ток числом
-        if ($id !== null) {
+        if ($id !== null || gettype($id) !== 'integer') {
             $this->checkZeroArray((User::where('id', $id)->get()));
 
         } elseif ($req->query('login') !== null) {
