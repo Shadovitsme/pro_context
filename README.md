@@ -3,8 +3,8 @@
 ## How to run
 
 ```bash
-git clone git@github.com:Shadovitsme/Laboratory_Internet.git
-cd Laboratory_Internet
+git clone https://github.com/Shadovitsme/pro_context
+cd pro_context
 cp .env.example .env
 sudo composer update
 php artisan key:generate
