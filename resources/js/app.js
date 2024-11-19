@@ -90,7 +90,7 @@ $(".js--get button").on("click", () => {
             };
         }
         $.ajax({
-            url: api_pref + `users/` + (id && login ? `${id}/` : id),
+            url: api_pref + `users/profile/` + (id && login ? `${id}/` : id),
             method: "GET",
             dataType: "json",
             data: payload,
