@@ -21,6 +21,7 @@ class UserController extends Controller
                 'password' => $queryResult->password,
                 'birth_date' => $queryResult->birth_date,
                 'email' => $queryResult->email,
+                'male' => $queryResult->male,
             ];
         }
 
@@ -231,7 +232,8 @@ class UserController extends Controller
             'name' => $req->json('login'),
             'email' => $req->json('email'),
             'password' => $req->json('password'),
-            'birth_date' => $req->json('birth_date')
+            'birth_date' => $req->json('birth_date'),
+            'male' => $req->json('male')
         ]);
 
         $this->outputResult(User::where('name', $req->json('login'))->get()[0]);
