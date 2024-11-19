@@ -133,7 +133,7 @@ $(".js--register button").on("click", () => {
         alert("Невалидная дата");
     } else {
         $.ajax({
-            url: api_pref + `users`,
+            url: api_pref + `users/registration`,
             method: "POST",
             dataType: "json",
             contentType: "applicatio/json",

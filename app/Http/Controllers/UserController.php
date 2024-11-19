@@ -90,10 +90,10 @@ class UserController extends Controller
     public function get(Request $req, string $id = null)
     {
         if ($id !== null || gettype($id) !== 'integer') {
-            $this->checkZeroArray((User::where('id', $id)->get()));
+            return $this->checkZeroArray((User::where('id', $id)->get()));
 
         } elseif ($req->query('login') !== null) {
-            $this->checkZeroArray(User::where('name', $req->query('login'))->get());
+            return $this->checkZeroArray(User::where('name', $req->query('login'))->get());
             return;
         } else {
             $this->outputResult(err: 'no id nor login provided');

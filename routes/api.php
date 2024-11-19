@@ -8,7 +8,7 @@ Route::prefix('v1')->group(function () {
     
     Route::get('/users/{id?}', [UserController::class, 'get'])->where('id', '[0-9]*');
 
-    Route::post('/users', [UserController::class, 'register']);
+    Route::post('/users/registration', [UserController::class, 'register']);
 
     Route::patch('/users/{id?}', [UserController::class, 'update'])->where('id', '[0-9]*');
 
