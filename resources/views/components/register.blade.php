@@ -6,6 +6,10 @@
             <input type="text" class='form-control js--login' placeholder="login">
         </div>
         <div class="input-group mb-2">
+            <span class="input-group-text w-25">Пол</span>
+            <input type="text" class='form-control js--male' placeholder="male">
+        </div>
+        <div class="input-group mb-2">
             <span class="input-group-text w-25">Почта</span>
             <input type="text" class='form-control js--email' placeholder="e-mail">
         </div>

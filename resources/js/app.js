@@ -125,6 +125,8 @@ $(".js--register button").on("click", () => {
     let password = $(".js--register .js--password").val().trim();
     let birthDate = $(".js--register .js--birth-date").val();
     let email = $(".js--register .js--email").val().trim();
+    let male = $(".js--register .js--male").val().trim();
+
     if (login === "" || password === "" || email === "") {
         alert("Не все поля заполнены!");
     } else if (emailValidate(email) == null) {
@@ -140,6 +142,7 @@ $(".js--register button").on("click", () => {
             data: JSON.stringify({
                 login: login,
                 email: email,
+                male: male,
                 birth_date: birthDate,
                 password: password,
             }),
